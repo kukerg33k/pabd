@@ -74,10 +74,18 @@
             })
             .then(response => response.json())
             .then(data => {
-                const area = parseFloat(num1);
-                var price = area * 200000;
-                document.getElementById('response').innerText = "Рассчитанная стоимость квартиры: " + price + " руб.";
-            })
+                if (data.status === 'success') {
+                // Форматируем цену с разделителями тысяч
+                const formattedPrice = new Intl.NumberFormat('ru-RU').format(data.predicted_price);
+                document.getElementById('response').innerHTML = 
+                    `<h3>Предсказанная стоимость квартиры:</h3>
+                     <p style="font-size: 24px; color: #007bff;">${formattedPrice} руб.</p>`;
+            } else {
+                document.getElementById('response').innerText = 
+                    'Ошибка: ' + (data.message || 'Неизвестная ошибка');
+            }
+        })
+
             .catch(error => {
                 console.error('Ошибка:', error);
                 document.getElementById('response').innerText = 'Произошла ошибка при расчете стоимости';
