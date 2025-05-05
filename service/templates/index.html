@@ -40,7 +40,7 @@
 </head>
 <body>
     <div class="form-container">
-        <h2>Введите четыре числа</h2>
+        <h2>Введите параметры</h2>
         <form id="numberForm">
             <input type="number" id="num1" placeholder="Площадь квартиры, м2" required>
             <input type="number" id="num2" placeholder="Количество комнат" required>
@@ -74,11 +74,13 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('response').innerText = 'Ответ сервера: ' + JSON.stringify(data);
+                const area = parseFloat(num1);
+                var price = area * 200000;
+                document.getElementById('response').innerText = "Рассчитанная стоимость квартиры: " + price + " руб.";
             })
             .catch(error => {
                 console.error('Ошибка:', error);
-                document.getElementById('response').innerText = 'Произошла ошибка при отправке данных';
+                document.getElementById('response').innerText = 'Произошла ошибка при расчете стоимости';
             });
         }
     </script>
