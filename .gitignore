@@ -3,3 +3,5 @@ data
 *.log
 notebooks/.ipynb_checkpoints
 __pycache__/
+models
+venv
