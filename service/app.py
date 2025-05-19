@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request 
 from logging.config import dictConfig
 import joblib
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
 
 dictConfig(
     {
@@ -30,7 +32,7 @@ app = Flask(__name__)
 
 model = None
 try:
-    model = joblib.load('models\linear_regression_model.pkl')
+    model = joblib.load('models/rf_model.pkl')
     app.logger.info("Model loaded successfully")
 except Exception as e:
     app.logger.error(f"Error loading model: {str(e)}")
@@ -50,10 +52,30 @@ def process_numbers():
     app.logger.info(f'Requst data: {data}')
         
     try:
-        area = [[float(data['area'])]]
-        
+        area = float(data['area'])
+        rooms = int(data['rooms'])
+        floor = int(data['floor'])
+
         if model:
-            predicted_price = model.predict(area)[0]
+            input_df = pd.DataFrame([{
+        'floor': data['floor'], #этаж
+        'total_meters': data['area'], #кол-во метров
+        'rooms_count': data['rooms'], #кол-во комнат
+        'author_type': 'developer' #автор объявления
+    }])
+
+            input_df = pd.get_dummies(input_df, columns=['author_type'])
+
+            # Добавляем недостающие колонки, если их нет в новых данных
+            expected_columns = model.feature_names_in_
+            for col in expected_columns:
+                if col not in input_df.columns:
+                    input_df[col] = 0
+
+            # Упорядочиваем колонки как при обучении
+            input_df = input_df[expected_columns]
+
+            predicted_price = model.predict(input_df)[0]
             return {
                 'status': 'success',
                 'predicted_price': predicted_price
