@@ -1,0 +1,19 @@
+stages:
+  preprocess:
+    cmd: python preprocess.py
+    deps:
+    - preprocess.py
+    outs:
+    - ../data/processed
+
+  train:
+    cmd: python train.py
+    deps:
+    - train.py
+    outs:
+    - ../models
+
+  test:
+    cmd: python test.py
+    deps:
+    - test.py

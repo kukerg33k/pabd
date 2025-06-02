@@ -1,7 +1,9 @@
 .venv
-data
+data/processed
+data/raw
 *.log
 notebooks/.ipynb_checkpoints
 __pycache__/
 models
 venv
+dvc_stage
